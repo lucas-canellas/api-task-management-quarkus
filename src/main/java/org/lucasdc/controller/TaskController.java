@@ -30,6 +30,7 @@ public class TaskController {
 
 
     @POST
+    @RolesAllowed("User")
     public Response createTask(TaskRequest taskRequest) {
         Task task = taskService.createTask(taskRequest);
         return Response.status(Response.Status.CREATED).entity(task).build();
@@ -37,7 +38,6 @@ public class TaskController {
 
     @GET
     @RolesAllowed("User")
-    @Path("my")
     public Response listTasksByUser() {
 
         String email = jwtWebToken.getClaim("email").toString();

@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.lucasdc.dto.TaskRequest;
 import org.lucasdc.exception.BusinessException;
 import org.lucasdc.model.Category;
@@ -27,6 +28,9 @@ public class TaskService {
     @Inject
     UserRepository userRepository;
 
+    @Inject
+    JsonWebToken jwtWebToken;
+
     @Transactional
     public Task createTask(TaskRequest taskRequest) {
         Category category = categoryRepository.findById(taskRequest.getCategoryId());
@@ -34,10 +38,9 @@ public class TaskService {
             throw new BusinessException("Categoria não encontrada");
         }
 
-        User user = userRepository.findById(taskRequest.getUserId());
-        if (user == null) {
-            throw new EntityNotFoundException("Usuário não encontrado");
-        }
+        String email = jwtWebToken.getClaim("email").toString();
+
+        User user = userRepository.findByEmail(email);
 
         Task task = Task.fromTaskRequest(taskRequest, category, user);
         taskRepository.persist(task);

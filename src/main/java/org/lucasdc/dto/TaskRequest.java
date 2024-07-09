@@ -14,5 +14,4 @@ public class TaskRequest {
     private Priority priority;
     private Status status;
     private Long categoryId;
-    private Long userId;
 }
