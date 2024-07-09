@@ -2,8 +2,8 @@ package org.lucasdc.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.DELETE;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.lucasdc.dto.TaskRequest;
 import org.lucasdc.exception.BusinessException;
@@ -42,6 +42,9 @@ public class TaskService {
 
         User user = userRepository.findByEmail(email);
 
+        if (user == null) {
+            throw new BusinessException("Usuário não encontrado");
+        }
         Task task = Task.fromTaskRequest(taskRequest, category, user);
         taskRepository.persist(task);
         return task;
@@ -50,4 +53,30 @@ public class TaskService {
     public List<Task> getTasksByUserEmail(String email) {
         return taskRepository.findByEmail(email);
     }
+
+    public Task getTaskById(Long taskId) {
+        Task task = taskRepository.findById(taskId);
+        if (task == null) {
+            throw new BusinessException("Task não existe");
+        }
+        return task;
+    }
+
+    @Transactional
+    public void deleteTask(Long taskId, String email) {
+        Task task = taskRepository.findById(taskId);
+        User user = userRepository.findByEmail(email);
+
+        if (task == null) {
+            throw new BusinessException("Task não existe");
+        }
+
+        if(task.getUser() != user) {
+            throw new BusinessException("So é possivel excluir a propria tarefa");
+        }
+
+        taskRepository.delete(task);
+    }
+
+
 }

@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.lucasdc.dto.TaskRequest;
+import org.lucasdc.dto.TaskResponse;
 import org.lucasdc.model.Category;
 import org.lucasdc.model.Task;
 import org.lucasdc.repository.CategoryRepository;
@@ -28,7 +29,6 @@ public class TaskController {
     @Inject
     JsonWebToken jwtWebToken;
 
-
     @POST
     @RolesAllowed("User")
     public Response createTask(TaskRequest taskRequest) {
@@ -44,6 +44,24 @@ public class TaskController {
         List<Task> tasksByUserEmail = taskService.getTasksByUserEmail(email);
 
         return Response.status(Response.Status.OK).entity(tasksByUserEmail).build();
+    }
+
+    @GET()
+    @Path("{taskId}")
+    @RolesAllowed("User")
+    public Response getTaskById(@PathParam("taskId") Long taskId) {
+        Task task = taskService.getTaskById(taskId);
+        TaskResponse taskResponse = TaskResponse.fromTask(task);
+        return Response.status(Response.Status.OK).entity(taskResponse).build();
+    }
+
+    @DELETE()
+    @Path("{taskId}")
+    @RolesAllowed("User")
+    public Response deleteTaskById(@PathParam("taskId") Long taskId) {
+        String email = jwtWebToken.getClaim("email").toString();
+        taskService.deleteTask(taskId, email);
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
 

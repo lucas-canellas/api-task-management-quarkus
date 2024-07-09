@@ -12,6 +12,9 @@ import org.lucasdc.exception.BusinessException;
 import org.lucasdc.model.User;
 import org.lucasdc.repository.UserRepository;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -49,6 +52,7 @@ public class AuthService {
                 .groups(new HashSet<>(Collections.singletonList(foundUser.getRole())))
                 .claim(Claims.nickname.name(), foundUser.getName())
                 .claim(Claims.email, foundUser.getEmail())
+                .expiresAt(Instant.now().plus(24, ChronoUnit.HOURS))
                 .sign();
 
         var response = new LoginResponse();
