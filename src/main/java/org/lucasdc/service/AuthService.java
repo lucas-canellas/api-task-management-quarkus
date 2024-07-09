@@ -44,7 +44,7 @@ public class AuthService {
             throw new BusinessException("O email ou a senha estão incorretos");
         }
 
-        String token = Jwt.issuer("lucascanellasdev@gmail.com")q
+        String token = Jwt.issuer("lucascanellasdev@gmail.com")
                 .upn(foundUser.getName())
                 .groups(new HashSet<>(Collections.singletonList(foundUser.getRole())))
                 .claim(Claims.nickname.name(), foundUser.getName())
