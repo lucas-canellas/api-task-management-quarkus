@@ -13,6 +13,8 @@ public class GeneralException implements ExceptionMapper<Exception> {
     @Produces(MediaType.APPLICATION_JSON)
     public Response toResponse(Exception e) {
 
+        System.out.println("Error: " + e);
+
         if(e instanceof BusinessException) {
             var exceptionMessage = new ExceptionResponse(e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(exceptionMessage).build();

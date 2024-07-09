@@ -48,6 +48,7 @@ public class AuthService {
                 .upn(foundUser.getName())
                 .groups(new HashSet<>(Collections.singletonList(foundUser.getRole())))
                 .claim(Claims.nickname.name(), foundUser.getName())
+                .claim(Claims.email, foundUser.getEmail())
                 .sign();
 
         var response = new LoginResponse();
