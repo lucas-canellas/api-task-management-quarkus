@@ -7,6 +7,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.lucasdc.dto.TaskRequest;
+import org.lucasdc.model.Task;
 
 @Path("/tasks")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -16,7 +17,11 @@ public class TaskController {
 
     @POST
     public Response createTask(TaskRequest taskRequest) {
+
+
+
         return null;
     }
+
 
 }

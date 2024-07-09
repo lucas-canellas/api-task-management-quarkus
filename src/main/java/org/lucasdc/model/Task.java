@@ -2,6 +2,7 @@ package org.lucasdc.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.lucasdc.dto.TaskRequest;
 
 import java.time.LocalDateTime;
 
@@ -23,5 +24,17 @@ public class Task {
     @ManyToOne()
     @JoinColumn(name = "user_id")
     private User user;
+
+    public static Task fromTaskRequest(TaskRequest taskRequest, Category category, User user) {
+        Task task = new Task();
+        task.setTitle(taskRequest.getTitle());
+        task.setDescription(taskRequest.getDescription());
+        task.setDate(taskRequest.getDate());
+        task.setPriority(taskRequest.getPriority());
+        task.setStatus(taskRequest.getStatus());
+        task.setCategory(category);
+        task.setUser(user);
+        return task;
+    }
 
 }

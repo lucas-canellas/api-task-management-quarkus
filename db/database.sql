@@ -5,3 +5,9 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
 	role VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE category (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    description VARCHAR(255)  NOT NULL
+);

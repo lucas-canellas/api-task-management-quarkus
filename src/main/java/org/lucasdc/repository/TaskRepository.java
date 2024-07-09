@@ -6,4 +6,5 @@ import org.lucasdc.model.Task;
 
 @ApplicationScoped
 public class TaskRepository implements PanacheRepository<Task> {
+
 }
