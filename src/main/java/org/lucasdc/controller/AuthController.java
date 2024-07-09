@@ -14,6 +14,7 @@ import org.eclipse.microprofile.jwt.Claims;
 import org.lucasdc.dto.LoginResponse;
 import org.lucasdc.model.User;
 import org.lucasdc.repository.UserRepository;
+import org.lucasdc.service.AuthService;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -25,53 +26,21 @@ import java.util.HashSet;
 public class AuthController {
 
     @Inject
-    UserRepository userRepository;
+    AuthService authService;
 
     @POST
     @Path("register")
     @Transactional
     public Response register(User user) {
-
-        if(userRepository.findByEmail(user.getEmail()) != null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Usuário já existe").build();
-        }
-
-        String passwordEncrypted = BcryptUtil.bcryptHash(user.getPassword());
-        user.setPassword(passwordEncrypted);
-        user.setRole("User");
-
-        userRepository.persist(user);
-
-        return Response.status(Response.Status.CREATED).entity(user).build();
+        User registeredUser = authService.save(user);
+        return Response.status(Response.Status.CREATED).entity(registeredUser).build();
     }
 
     @POST
     @Path("login")
-    @Transactional
     public Response login(User user) {
-        User foundUser = userRepository.findByEmail(user.getEmail());
-
-        if(foundUser == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("O email ou a senha esta errada").build();
-        }
-
-        boolean matches = BcryptUtil.matches(user.getPassword(), foundUser.getPassword());
-
-        if(!matches) {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("O email ou a senha esta errada").build();
-        }
-
-        String token = Jwt.issuer("lucascanellasdev@gmail.com")
-                .upn(foundUser.getEmail())
-                .groups(new HashSet<>(Collections.singletonList(foundUser.getRole())))
-                .sign();
-
-        var response = new LoginResponse();
-        response.setName(foundUser.getName());
-        response.setToken(token);
-
-        return Response.ok().entity(response).build();
-
+        LoginResponse loginResponse = authService.login(user);
+        return Response.ok().entity(loginResponse).build();
     }
 
 }

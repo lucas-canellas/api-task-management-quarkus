@@ -16,22 +16,4 @@ import org.lucasdc.repository.UserRepository;
 public class UserController {
 
 
-    @Inject
-    UserRepository userRepository;
-
-//    @GET
-//    @Path("allow-all")
-//    @PermitAll
-//    @Produces(MediaType.TEXT_PLAIN)
-//    public String allowAll() {
-//        return "ROTA ABERTA";
-//    }
-//
-//    @GET
-//    @Path("apenasuser")
-//    @RolesAllowed({ "User" })
-//    @Produces(MediaType.TEXT_PLAIN)
-//    public String user() {
-//        return "APENAS USER";
-//    }
 }
